@@ -62,3 +62,37 @@ export const requestHandler = async(
         setIsLoading && setIsLoading(false)
     }
 }
+
+export const getChatObjectMetaData = (chat, loggedInUser)=>{
+    const lastMessage = chat.lastMessage?.content
+    ? chat.lastMessage?.content
+    : chat.lastMessage
+    ? `${chat.lastMessage?.attachments?.length} attachment${
+        chat.lastMessage.attachments.length > 1 ? "s" : ""
+      }`
+    : "No messages yet"
+
+    if (chat.isGroupChat) {
+    
+    return {
+      avatar: "",
+      title: chat.name, 
+      description: `${chat.participants.length} members in the chat`, 
+      lastMessage: chat.lastMessage
+        ? chat.lastMessage?.sender?.username + ": " + lastMessage
+        : lastMessage,
+    };
+  } else {
+    const participant = chat.participants.find(
+      (p) => p._id !== loggedInUser?._id
+    );
+    
+    return {
+      avatar: participant?.avatar.url, 
+      title: participant?.username, 
+      description: participant?.email, 
+      lastMessage,
+    };
+  }
+
+}

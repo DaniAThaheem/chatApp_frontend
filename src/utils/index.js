@@ -35,3 +35,30 @@ export class LOCALSTORAGE{
         localStorage.clear()
     }
 }
+
+export const requestHandler = async(
+    api,
+    setIsLoading,
+    onSuccess,
+    onError
+)=>{
+    try {
+        setIsLoading && setIsLoading(true)
+        const response = await api()
+        const {data} = response
+        if(data.success){
+            onSuccess(data)
+        }
+    } catch (error) {
+        if([401, 403].includes(error?.response?.data?.statusCode)){
+            localStorage.clear()
+            if(isBrowser){
+                window.location.href="/login"
+            }
+        }
+        onError(error?.response?.data?.message || "Something went wrong")
+    }
+    finally{
+        setIsLoading && setIsLoading(false)
+    }
+}

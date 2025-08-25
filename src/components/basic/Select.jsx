@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import {Combobox, ComboboxButton, ComboboxInput, ComboboxOption, ComboboxOptions} from "@headlessui/react"
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
-import {classNames, ClassNames} from "../../utils/index.js"
+import {classNames} from "../../utils/index.js"
 
 const Select = (props) => {
     const {options, value, placeholder, onChange} = props

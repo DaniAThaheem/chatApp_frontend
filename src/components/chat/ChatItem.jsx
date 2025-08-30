@@ -36,13 +36,13 @@ const ChatItem = ({chat, onChatDelete, isActive, unreadCount=0, onClick}) => {
       onGroupDelete={onChatDelete}
       />
       <div
-      role=''
+      role='button'
       onClick={()=> onClick(chat)}
       onMouseLeave={()=>setOpenOptions(false)}
       className={classNames(
-        "",
-        isActive?"":"",
-        unreadCount>0?"":""
+        "group p-4 my-2 flex justify-between gap-3 items-start cursor-pointer rounded-3xl hover:bg-secondary",
+        isActive?"border-[1px] border-zinc-500 bg-secondary":"",
+        unreadCount>0?"border-[1px] border-success bg-success/20 font-bold":""
       )}
       >
         <button
@@ -50,12 +50,12 @@ const ChatItem = ({chat, onChatDelete, isActive, unreadCount=0, onClick}) => {
           e.stopPropagation()
           setOpenOptions(!openOptions)}
         }
-        className={classNames()}
+        className={classNames("self-center p-1 relative")}
         >
           <EllipsisVerticalIcon className=""/>
           <div className={classNames(
-            "",
-            openOptions?"":""
+            "h-6 group-hover:w-6  group-hover:opacity-100 w-0 opacity-0  transition-all ease-in-out duration-100  text-zinc-300",
+            openOptions?"block":"hidden"
           )}>
             {
               chat.isGroupChat?
@@ -65,9 +65,9 @@ const ChatItem = ({chat, onChatDelete, isActive, unreadCount=0, onClick}) => {
                 setOpenOptions(true)
               }}
               role='button'
-              className=''
+              className='p-4 w-full rounded-lg inline-flex items-center hover:bg-secondary'
               >
-                <InformationCircleIcon className=''/>
+                <InformationCircleIcon className='h-4 w-4 mr-2'/>
                 About Group
               </p>
               :
@@ -80,9 +80,9 @@ const ChatItem = ({chat, onChatDelete, isActive, unreadCount=0, onClick}) => {
                 }
               }}
               role='button'
-              className=''
+              className='p-4 text-danger rounded-lg w-full inline-flex items-center hover:bg-secondary'
               >
-                <TrashIcon className=''/>
+                <TrashIcon className='h-4 w-4 mr-2'/>
                 Delete Chat
               </p>
             }
@@ -90,10 +90,10 @@ const ChatItem = ({chat, onChatDelete, isActive, unreadCount=0, onClick}) => {
           </div>
 
         </button>
-        <div className=''>
+        <div className='flex justify-center items-center flex-shrink-0'>
           {
             chat.isGroupChat?
-            <div className=''>
+            <div className='w-12 relative h-12 flex-shrink-0 flex justify-start items-center flex-nowrap'>
               {
                 chat.participants.slice(0, 3).map((p, i)=>(
                   <img 
@@ -101,10 +101,10 @@ const ChatItem = ({chat, onChatDelete, isActive, unreadCount=0, onClick}) => {
                   src={p.avatar.url} 
                   alt="avatar"
                   className={classNames(
-                    "",
-                    i===0?"":"",
-                    i===2?"":"",
-                    i===3?"":""
+                    "w-8  h-8 border-[1px] border-white rounded-full absolute outline-4 outline-dark group-hover:outline-secondary",
+                    i===0?"left-0 z-[3]"
+                    :i===1?"left-2.5 z-[2]"
+                    :i===2?"left-[18p] z-[1]":""
                   )} 
                   />
                 ))
@@ -114,33 +114,34 @@ const ChatItem = ({chat, onChatDelete, isActive, unreadCount=0, onClick}) => {
             :
             <img 
             src={getChatObjectMetaData(chat, user).avatar} 
+            className='w-12 h-12 rounded-full'
             alt="avatar" />
           }
 
         </div>
-        <div className=''>
-          <p className="">
+        <div className='w-full'>
+          <p className=" truncate-1">
             {getChatObjectMetaData(chat, user).title} 
           </p>
-          <div className=''>
+          <div className='w-full inline-flex items-center text-left'>
             {chat.lastMessage && chat.lastMessage.attachments.length>0 ?
-            <PaperClipIcon className="" />
+            <PaperClipIcon className="text-white/50 h-3 w-3 mr-2 flex flex-shrink-0" />
             :
             null
             }
-            <small className=''>
+            <small className='text-white/50 truncate-1 text-sm text-ellipsis inline-flex items-center'>
               {getChatObjectMetaData(chat, user).lastMessage} 
             </small>
           </div>
         </div>
-        <div className="">
-          <small className=''>
+        <div className="flex text-white/50 h-full text-sm flex-col justify-between items-end">
+          <small className='mb-2 inline-flex flex-shrink-0 w-max'>
             {moment(chat.updatedAt).add("TIME_ZONE", "hours").fromNow(true)}
           </small>
           {
             unreadCount <= 0? null
             :
-            <span className=''>
+            <span className='bg-success h-2 w-2 aspect-square flex-shrink-0 text-white text-xs rounded-full inline-flex justify-center items-center'>
               {unreadCount>9 ? "9+": unreadCount}
             </span>
           }

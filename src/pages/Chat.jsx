@@ -91,8 +91,8 @@ const Chat = () => {
 
   const getChats = async()=>{
     await requestHandler(
-      async()=> await getChats(),
-      null,
+      async()=> await getUserChats(),
+      setLoadingChats,
       (res)=>{
         const {data} = res
         setChats(data || [])
@@ -310,12 +310,12 @@ const Chat = () => {
         onClose={()=>setOpenAddChat(false)}
         onSuccess={()=>getChats()}
       />
-      <div className="">
-        <div className="">
-          <div className="">
+      <div className="w-full justify-between items-stretch h-screen flex flex-shrink-0">
+        <div className="w-1/3 relative ring-white overflow-y-auto px-4">
+          <div className="z-10 w-full sticky top-0 bg-dark py-4 flex justify-between items-center gap-4">
             <button
             type='button'
-            className=''
+            className='focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-xl text-sm px-5 py-4 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900 flex-shrink-0'
             onClick={logout}
             >
               Log Out
@@ -327,14 +327,14 @@ const Chat = () => {
             />
             <button
             onClick={()=>setOpenAddChat(true)}
-            className=''
+            className='rounded-xl border-none bg-primary text-white py-4 px-5 flex flex-shrink-0'
             >
               + Add Chat
             </button>
           </div>
           {
             loadingChats?
-            <div className="">
+            <div className="flex justify-center items-center h-[calc(100%-88px)]">
               <Typing/>
             </div>
             :
@@ -368,15 +368,15 @@ const Chat = () => {
             
           }
         </div>
-        <div className=''>
+        <div className='w-2/3 border-l-[0.1px] border-secondary'>
           {
             currentChat.current && currentChat.current?._id?
             <>
-              <div className="">
-                <div className="">
+              <div className="p-4 sticky top-0 bg-dark z-20 flex justify-between items-center w-full border-b-[0.1px0] border-secondary">
+                <div className="flex justify-start items-center w-max gap-3">
                   {
                     currentChat.current?.isGroupChat?
-                    <div className="">
+                    <div className="w-12 relative h-12 flex-shrink-0 flex justify-start items-center flex-nowrap">
                       {
                         currentChat.current.participants
                         .slice(0, 3)
@@ -385,13 +385,13 @@ const Chat = () => {
                           src={participant.avatar.url} 
                           alt="avatar"
                           className={classNames(
-                            "",
+                            "w-9 h-9 border-[1px] border-white rounded-full absolute outline-4 outline-dark",
                             i===0?
-                            ""
+                            "left-0 z-30"
                             :i===1?
-                            ""
+                            "left-2 z-20"
                             :i===2?
-                            ""
+                            "left-4 z-10"
                             :""
                           )}
                            />
@@ -400,15 +400,15 @@ const Chat = () => {
                     </div>
                     :
                     <img 
-                    className=''
+                    className='h-14 w-14 rounded-full flex flex-shrink-0 object-cover'
                     src={getChatObjectMetaData(currentChat.current, user).avatar} 
                     alt="" />
                   }
                   <div>
-                    <p className="">
+                    <p className="font-bold">
                       {getChatObjectMetaData(currentChat.current, user).title}
                     </p>
-                    <small className="">
+                    <small className="text-zinc-400">
                       {getChatObjectMetaData(currentChat.current, user).description}
                     </small>
                   </div>
@@ -416,16 +416,16 @@ const Chat = () => {
               </div>
               <div
               className={classNames(
-                "",
+                "p-8 overflow-y-auto flex flex-col-reverse gap-6 w-full",
                 attachedFiles.length>0?
-                ""
-                :""
+                "h-[calc(100vh-336px)]"
+                :"h-[calc(100vh-176px)]"
               )}
-              id=''
+              id='message-window'
               >
                 {
                   loadingMessages?
-                  <div className="">
+                  <div className="flex justify-center items-center h-[calc(100%-88px)]">
                     <Typing/>
                   </div>
                   :
@@ -446,22 +446,22 @@ const Chat = () => {
               </div>
               {
                 attachedFiles.length>0?
-                <div className=''>
+                <div className='grid gap-4 grid-cols-5 p-4 justify-start max-w-fit'>
                   {
                     attachedFiles.map((file, i)=>(
                       <div 
-                      className=""
+                      className="group w-32 h-32 relative aspect-square rounded-xl cursor-pointer"
                       key={i}
                       >
-                        <div>
+                        <div className='absolute inset-0 flex justify-center items-center w-full h-full bg-black/40 group-hover:opacity-0 transition-opacity ease-in-out duration-150'>
                           <button
                           onClick={()=>{
                             setAttachedFiles(attachedFiles.filter((_, index)=> index !==i))
                           }
                           }
-                          className=''
+                          className='absolute -top-2 -right-2'
                           >
-                            <XCircleIcon className='' />
+                            <XCircleIcon className='h-6 w-6 text-white' />
                           </button>
                         </div>
                         <img 
@@ -474,7 +474,7 @@ const Chat = () => {
                 </div>
                 :null
               }
-              <div className=''>
+              <div className='sticky top-full p-4 flex justify-between items-center  w-full gap-2 border-t-[0.1px] border-secondary'>
                 <Input
                 id="attachments"
                 type="file"
@@ -488,8 +488,8 @@ const Chat = () => {
                   }
                 }}
                 />
-                <label className='' htmlFor="attachments">
-                  <PaperClipIcon className='' />
+                <label className='p-4 rounded-full bg-dark hover:bg-secondary' htmlFor="attachments">
+                  <PaperClipIcon className='w-6 h-6 ' />
                 </label>
                 <Input
                 placeholder={"Message"}
@@ -506,14 +506,14 @@ const Chat = () => {
                 <button
                 onClick={handleOnMessageChange}
                 disabled={!message && attachedFiles.length<=0}
-                className=''
+                className='p-4 rounded-full bg-dark hover:bg-secondary disabled:opacity-50'
                 >
-                  <PaperAirplaneIcon className='' />
+                  <PaperAirplaneIcon className='w-6 h-6' />
                 </button>
               </div>
             </>
             :
-            <div className="">
+            <div className="w-full h-full flex justify-center items-center">
               No Chat Selected
             </div>
           }

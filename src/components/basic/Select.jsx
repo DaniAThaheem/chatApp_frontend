@@ -11,22 +11,23 @@ const Select = (props) => {
     },[options])
   return (
     <Combobox
-    className={""}
+    className={"w-full"}
     value={options.find((o)=>o.value === value)}
     onChange={(val)=>onChange(val)}
     as={"div"}
     >
-        <div className=''>
-            <ComboboxButton>
+        <div className='relative mt-2'>
+            <ComboboxButton className={"w-full"}>
                 <ComboboxInput
                 placeholder={placeholder}
                 onChange={(e)=>setLocalOptions(options.filter((op)=>op.label.includes(e.target.value)))}
                 displayValue={(option)=>option?.label}
+                className={"block w-full rounded-xl border-0 py-4 px-5 bg-secondary outline-[1px] outline-zinc-400 text-white font-light placeholder:text-white/70 focus:ring-[1px] focus:ring-white"}
                 />
             </ComboboxButton>
-            <ComboboxButton>
+            <ComboboxButton className={"absolute inset-y-0 right-0 flex items-center rounded-r-md px-2 focus:outline-none"}>
                 <ChevronUpDownIcon
-                className=''
+                className='h-5 w-5 text-zinc-400'
                 aria-hidden="true"
                 />
             </ComboboxButton>
@@ -39,8 +40,8 @@ const Select = (props) => {
                             key={option.value}
                             value={option}
                             className={({active})=>classNames(
-                                "",
-                                active?"":""
+                                " cursor-pointer relative rounded-2xl select-none py-4 pl-3 pr-9 ",
+                                active?"bg-dark text-white":"text-white"
                             )}
                             >
                                 {
@@ -48,8 +49,8 @@ const Select = (props) => {
                                         <>
                                             <span
                                             className={classNames(
-                                                "",
-                                                selected?"":""
+                                                "block truncate",
+                                                selected?"font-semibold":""
                                             )}>
                                                 {option.label}
                                             </span>
@@ -57,12 +58,12 @@ const Select = (props) => {
                                                 selected &&
                                                 <span
                                                     className={classNames(
-                                                    "",
-                                                    active?"":""
+                                                    "absolute inset-y-0 right-0 flex items-center pr-4 ",
+                                                    active?"text-white":"text-indigo-600"
                                                 )}
                                                 >
                                                     <CheckIcon
-                                                    className=''
+                                                    className='h-5 w-5'
                                                     aria-hidden="true"
                                                     />
                                                 </span>

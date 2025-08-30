@@ -86,72 +86,75 @@ const AddChatModal = ({open, onClose, onSuccess}) => {
 
   return (
     <Transition.Root as={Fragment} show={open}>
-        <Dialog as='div' className={``} onClose={handleClose}>
+        <Dialog as='div' className={`relative z-10`} onClose={handleClose}>
             <TransitionChild
             as={Fragment}
-            enter=''
-            enterFrom=''
-            enterTo=''
-            leave=''
-            leaveFrom=''
-            leaveTo=''
+            enter='ease-out duration-300'
+            enterFrom='opacity-0'
+            enterTo='opacity-100'
+            leave='ease-in duration-200'
+            leaveFrom='opacity-100'
+            leaveTo='opacity-0'
             >
-                <div className='' />
+                <div className='flex inset-0 bg-black/50 bg-opacity-75 transition-opacity' />
             </TransitionChild>
-            <div className="">
-                <div className="">
+            <div className="fixed inset-0 z-10 overflow-y-visible">
+                <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
                     <TransitionChild
                     as={Fragment}
-                    enter=''
-                    enterFrom=''
-                    enterTo=''
-                    leave=''
-                    leaveFrom=''
-                    leaveTo=''
+                    enter='ease-out duration-300'
+                    enterFrom='opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95'
+                    enterTo='opacity-100 translate-y-0 sm:scale-100'
+                    leave='ease-in duration-200'
+                    leaveFrom='opacity-100 translate-y-0 sm:scale-100'
+                    leaveTo='opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95'
                     >
                         <DialogPanel
-                        className={``}
+                        className={` relat transform overflow-x-hidden rounded-lg bg-dark px-4 pb-4 pt-5  text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-3xl sm:p-6`}
+                        style={{
+                            overflow:'inherit'
+                        }}
                         >
                             <div>
-                                <div className="">
+                                <div className="flex justify-between items-center">
                                     <DialogTitle
                                     as='h3'
-                                    className={``}
+                                    className={`text-lg font-semibold leading-6 text-white`}
                                     >
                                         Create chat
                                     </DialogTitle>
                                     <button
                                     type='button'
-                                    className=''
+                                    className='rounded-md bg-transparent text-zinc-400 hover:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-white focus:ring-offset-2'
                                     onClick={()=>handleClose()}
                                     >
-                                        <span className=''>Close</span>
-                                        <XMarkIcon className='' aria-hidden="true" />
+                                        <span className='sr-only'>Close</span>
+                                        <XMarkIcon className='h-6 w-6' aria-hidden="true" />
                                     </button>
                                 </div>
                             </div>
                             <div>
-                                <Switch.Group as={`div`} className={``}>
+                                <Switch.Group as={`div`} className={`flex items-center my-5`}>
                                     <Switch
                                         checked={isGroupChat}
                                         onChange={setIsGroupChat}
                                         className={classNames(
-                                            isGroupChat?"":"",
-                                            ""
+                                            isGroupChat?"bg-secondary":"bg-zinc-200",
+                                            "relative outline-[1px] outline-white inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent  transition-colors duration-200 ease-in-out focus:ring-0"
                                         )}
                                     >
                                         <span
                                             className={classNames(
-                                                isGroupChat?"":"",
-                                                ""
+                                                isGroupChat?"translate-x-5 bg-success":"translate-x-0 bg-white",
+                                                "pointer-events-none inline-block h-5 w-5 transform rounded-full shadow ring-0 transition duration-200 ease-in-out"
                                             )}
                                             aria-hidden="true"
                                         />
-                                        <Switch.Label as='span' className={``}>
+                                        <Switch.Label as='span' className={`ml-3 text-sm`}>
                                             <span
                                                 className={classNames(
-                                                    "",
-                                                    isGroupChat?"":""
+                                                    "font-medium text-white",
+                                                    isGroupChat?"":"opacity-40"
                                                 )}
                                             >
                                                 Is it a group chat?
@@ -161,7 +164,7 @@ const AddChatModal = ({open, onClose, onSuccess}) => {
                                 </Switch.Group> 
                                     {
                                         isGroupChat?
-                                        <div>
+                                        <div className='my-5'>
                                             <Input
                                             placehodler={`Enter the group name`}
                                             value={groupName}
@@ -170,7 +173,7 @@ const AddChatModal = ({open, onClose, onSuccess}) => {
                                         </div>
                                         :null
                                     }
-                                    <div className=''>
+                                    <div className='my-5'>
                                         <Select
                                         placehodler={
                                             isGroupChat?
@@ -198,27 +201,27 @@ const AddChatModal = ({open, onClose, onSuccess}) => {
                                     </div>
                                     {
                                         isGroupChat?
-                                        <div>
-                                            <span className={classNames("")}>
-                                                <UserGroupIcon className='' />
+                                        <div className='my-5'>
+                                            <span className={classNames("font-medium text-white inline-flex items-center")}>
+                                                <UserGroupIcon className='h-5 w-5 mr-2' />
                                                 Selected participants
                                             </span>{" "}
                                             <div
-                                            className=''
+                                            className='flex justify-start items-center flex-wrap gap-2 mt-3'
                                             >
                                             {
                                                 users.filter((user)=>groupParticipants.includes(user._id))
                                                 .map((participant)=>(
                                                     <div
-                                                    className=''
+                                                    className='inline-flex bg-secondary rounded-full p-2 border-[1px] border-zinc-400 items-center gap-2'
                                                     key={participant._id}
                                                     >
-                                                        <img src={participant.avatar.url} alt="avatar" />
-                                                        <p className=''>
+                                                        <img src={participant.avatar.url} alt="avatar" className='h-6 w-6 rounded-full object-cover' />
+                                                        <p className='text-white'>
                                                             {participant.username}
                                                         </p>
                                                         <XCircleIcon
-                                                        className=''
+                                                        className='w-6 h-6 hover:text-primary cursor-pointer'
                                                         role="button"
                                                         onClick={()=>
                                                             setGroupParticipants(
@@ -235,19 +238,19 @@ const AddChatModal = ({open, onClose, onSuccess}) => {
                                         null
                                     }
                                 </div>
-                            <div className=''>
+                            <div className='mt-5 flex justify-between items-center gap-4 '>
                                 <Button
                                 disabled={creatingChat}
                                 severity='secondary'
                                 onClick={handleClose}
-                                className=""
+                                className="w-1/2"
                                 >
                                     Close
                                 </Button>
                                 <Button
                                 disabled={creatingChat}
                                 onClick={isGroupChat? createNewGroupChat: createNewChat}
-                                className=""
+                                className="w-1/2"
                                 >
                                     Create
                                 </Button>

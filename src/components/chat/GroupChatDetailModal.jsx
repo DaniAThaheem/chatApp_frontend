@@ -144,232 +144,235 @@ const GroupChatDetailModal = ({open, onClose, chatId, onGroupDelete}) => {
   return (
     <div>
       <Transition.Root show={open} as={Fragment}>
-        <Dialog as='div' className={``} onClose={handleClose}>
+        <Dialog as='div' className={` relative z-40`} onClose={handleClose}>
             <TransitionChild
                 as={Fragment}
-                enter=''
-                enterFrom=''
-                enterTo=''
-                leave=''
-                leaveFrom=''
-                leaveTo=''
+                enter='transform transition ease-in-out duration-500 sm:duration-700'
+                enterFrom='opacity-0'
+                enterTo='opacity-100'
+                leave='transform transition ease-in-out duration-500 sm:duration-700'
+                leaveFrom='opacity-100'
+                leaveTo='opacity-0'
             >
-                <div className=''/>
+                <div className=' fixed inset-0 bg-black/50'/>
             </TransitionChild>
-                <div className="">
-                    <div className="">
-                        <div className="">
-                                
+                <div className="fixed inset-0 overflow-hidden">
+                    <div className=" absolute inset-0 overflow-hidden">
+                        <div className=" pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10 sm:pl-16">
+                            <TransitionChild
+                                as={Fragment}
+                                enter='transform transition ease-in-out duration-500 sm:duration-700'
+                                enterFrom=' translate-x-full'
+                                enterTo='translate-x-0'
+                                leave='transform transition ease-in-out duration-500 sm:duration-700'
+                                leaveFrom='translate-x-0'
+                                leaveTo='translate-x-full'
+                            >
+                                <DialogPanel className={` pointer-events-auto w-screen max-w-2xl`}>
+                                    <div className=" flex h-full flex-col overflow-y-scroll">
+                                        <div className="px-4 sm:px-6">
+                                            <div className="flex items-start justify-between">
+                                                <div className="ml-3 flex h-7 items-center">
+                                                    <button
+                                                    type='button'
+                                                    onClick={handleClose}
+                                                    className='relative rounded-md bg-secondary text-zinc-400 hover:text-zinc-500 focus:outline-none'
+                                                    >
+                                                        <span className='absolute -inset-2.5'/>
+                                                        <span className='sr-only'>Close Panel</span>
+                                                        <XMarkIcon
+                                                        className='h-6 w-6'
+                                                        aria-hidden="true"
+                                                        />
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="relative mt-6 flex-1 px-4 sm:px-6">
+                                            <div className="flex flex-col justify-center items-start">
+                                                <div className="flex pl-16 justify-center items-center relative w-full h-max gap-3">
+                                                    {groupDetails?.participants.slice(0,3).map((p)=>
+                                                        <img 
+                                                        className='w-24 h-24 -ml-16 rounded-full outline-4 outline-secondary'
+                                                        src={p.avatar.url}
+                                                        alt="avatar" />
+                                                    )}
+                                                    {groupDetails?.participants && groupDetails.participants?.length>3?
+                                                    <p>+{groupDetails.participants.length-3}</p>
+                                                    :null
+                                                    }
+                                                </div>
+                                                <div className='w-full flex flex-col justify-center items-center text-center'>
+                                                    {renamingGroup?
+                                                    <div className='w-full flex justify-center items-center mt-5 gap-2'>
+                                                        <Input
+                                                        placeholder={"Enter new group name..."}
+                                                        value={newGroupName}
+                                                        onClick={(e)=>setNewGroupName(e)}
+                                                        />
+                                                        <Button
+                                                        severity='primary'
+                                                        onClick={handleGroupNameUpdate}
+                                                        >
+                                                            Save
+                                                        </Button>
+                                                        <Button
+                                                        severity='secondary'
+                                                        onClick = {()=> setRenamingGroup(false)}
+                                                        >
+                                                            Cancel
+                                                        </Button>
+                                                    </div>
+                                                    :
+                                                    <div className='w-full inline-flex justify-center items-center text-center mt-5'>
+                                                        <h1 className='text-2xl font-semibold truncate-1'>
+                                                            {groupDetails?.name}
+                                                        </h1>
+                                                        {
+                                                            groupDetails.admin === user._id?
+                                                            <button
+                                                            onClick={()=>setRenamingGroup(false)}
+                                                            >
+                                                                <PencilIcon
+                                                                className='w-5 h-5 ml-4'
+                                                                />
+                                                            </button>
+                                                            :
+                                                            null
+                                                        }
+                                                    </div>
+                                                    }
+                                                    <p className='mt-2 text-zinc-400 text-sm'>
+                                                        Group . {groupDetails.participants.length}{""}
+                                                        participants
+                                                    </p>
+                                                </div>
+                                                <hr className='border-[0.1px] border-zinc-600 my-5 w-full' />
+                                                <div className='w-full'>
+                                                    <p className='inline-flex items-center'>
+                                                        <UserGroupIcon className='' />{""}
+                                                        {groupDetails.participants.length} Participants
+                                                    </p>
+                                                    <div className='h-6 w-6 mr-2'>
+                                                        {groupDetails.participants.map((p)=>(
+                                                            <React.Fragment key={p._id}>
+                                                                <div className='flex justify-between  items-center w-full py-4'>
+                                                                    <div className='flex justify-start items-start gap-3 w-full'>
+                                                                        <img 
+                                                                        src={p.avatar.url} 
+                                                                        className='h-12 w-12 rounded-full'
+                                                                        alt="avatar" 
+                                                                        />
+                                                                        <div >
+                                                                            <p className='text-white font-semibold text-sm inline-flex items-center w-full'>
+                                                                                {p.username}{""}
+                                                                                {
+                                                                                    groupDetails.admin === p._id?
+                                                                                    <span className='ml-2 text-[10px] px-4 bg-success/10 border-[0.1px] border-success rounded-full text-success'>
+                                                                                    admin  
+                                                                                    </span>
+                                                                                    :null
+                                                                                }
+                                                                            </p>
+                                                                            <small className='text-zinc-400'>
+                                                                                {p.email}
+                                                                            </small>
+                                                                        </div>
+                                                                    </div>
+                                                                            {groupDetails.admin === user._id?
+                                                                            <div>
+                                                                                <Button
+                                                                                onClick={()=>{
+                                                                                    const ok = confirm(
+                                                                                        "Are sure you sure do you want to remove " + p.username +" ?"
+                                                                                    )
+                                                                                    if(ok){
+                                                                                        removeParticipant(p._id||"")
+                                                                                    }
+                                                                                }}
+                                                                                size="small"
+                                                                                severity='danger'
+                                                                                >
+                                                                                    Remove
+                                                                                </Button>
+                                                                            </div>
+                                                                            :null
+                                                                            }
+                                                                        </div>
+                                                                    <hr className='border-[0.1px] border-zinc-600 my-5 w-full'/>
+                                                            </React.Fragment>
+                                                        ))}
+                                                        {
+                                                            groupDetails.admin === user._id?
+                                                            <div className='w-full my-5 flex flex-col justify-center items-center gap-4'>
+                                                                {!addingParticipant?   
+                                                                    <Button
+                                                                    onClick ={()=>{setAddinParticipant(true)}}
+                                                                    >
+                                                                        <UserPlusIcon
+                                                                        className='w-5 h-5 mr-1'
+                                                                        />
+                                                                        Add Participant
+                                                                    </Button>
+                                                                
+                                                                    :
+                                                                    <div className='w-full flex justify-center items-center gap-2'>
+                                                                        <Select
+                                                                        placeholder="Select a user to add"
+                                                                        value={participantToBeAdded}
+                                                                        options={users.map((user)=>(
+                                                                        {
+                                                                        label:user.username,
+                                                                        value:user._id
+                                                                        }
+                                                                        ))}
+                                                                        onChange ={({value})=>{
+                                                                        setParticipantToBeAdded(value)
+                                                                        }}
+                                                                        />
+                                                                        <Button
+                                                                        onClick ={ ()=>addParticipant()}
+                                                                        >
+                                                                        +Add
+                                                                        </Button>
+                                                                        <Button
+                                                                        severity="secondary"
+                                                                        onChange={()=>{
+                                                                        setAddinParticipant(false)
+                                                                        setParticipantToBeAdded("")
+                                                                        }}
+                                                                        >
+                                                                        Cancel
+                                                                        </Button>
+                                                                    </div>
+                                                                }
+                                                                <Button
+                                                                fullWidth
+                                                                severity='danger'
+                                                                onClick ={()=>{
+                                                                const ok = confirm("Are you sure do you want to delete this group?")
+                                                                if(ok){
+                                                                deleteGroupChat()
+                                                                }
+                                                                }}
+                                                                >
+                                                                    <TrashIcon className='w-5 h-5 mr-1'/>
+                                                                    Delete Group
+                                                                </Button>
+                                                            
+                                                            </div>
+                                                            :null
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </DialogPanel>
+                            </TransitionChild>
                         </div>
                     </div>
                 </div>
-                <TransitionChild
-                    as={Fragment}
-                    enter=''
-                    enterFrom=''
-                    enterTo=''
-                    leave=''
-                    leaveFrom=''
-                    leaveTo=''
-                >
-                    <DialogPanel className={``}>
-                        <div className="">
-                            <div className="">
-                                <div className="">
-                                    <div className="">
-                                        <button
-                                        type='button'
-                                        onClick={handleClose}
-                                        className=''
-                                        >
-                                            <span className=''/>
-                                            <span className=''>Close Panel</span>
-                                            <XMarkIcon
-                                            className=''
-                                            aria-hidden="true"
-                                            />
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="">
-                                <div className="">
-                                    <div className="">
-                                        {groupDetails?.participants.slice(0,3).map((p)=>
-                                            <img 
-                                            className=''
-                                            src={p.avatar.url}
-                                            alt="avatar" />
-                                        )}
-                                        {groupDetails?.participants && groupDetails.participants?.length>3?
-                                        <p>+{groupDetails.participants.length-3}</p>
-                                        :null
-                                        }
-                                    </div>
-                                    <div className=''>
-                                        {renamingGroup?
-                                        <div className=''>
-                                            <Input
-                                            placeholder={"Enter new group name..."}
-                                            value={newGroupName}
-                                            onClick={(e)=>setNewGroupName(e)}
-                                            />
-                                            <Button
-                                            severity='primary'
-                                            onClick={handleGroupNameUpdate}
-                                            >
-                                                Save
-                                            </Button>
-                                            <Button
-                                            severity='secondary'
-                                            onClick = {()=> setRenamingGroup(false)}
-                                            >
-                                                Cancel
-                                            </Button>
-                                        </div>
-                                        :
-                                        <div className=''>
-                                            <h1 className=''>
-                                                {groupDetails?.name}
-                                            </h1>
-                                            {
-                                                groupDetails.admin === user._id?
-                                                <button
-                                                onClick={()=>setRenamingGroup(false)}
-                                                >
-                                                    <PencilIcon
-                                                    className=''
-                                                    />
-                                                </button>
-                                                :
-                                                null
-                                            }
-                                        </div>
-                                        }
-                                        <p>
-                                            Group . {groupDetails.participants.length}{""}
-                                            participants
-                                        </p>
-                                    </div>
-                                    <hr className='' />
-                                    <div className=''>
-                                        <p className=''>
-                                            <UserGroupIcon className='' />{""}
-                                            {groupDetails.participants.length} Participants
-                                        </p>
-                                        <div className=''>
-                                            {groupDetails.participants.map((p)=>(
-                                                <React.Fragment key={p._id}>
-                                                    <div className=''>
-                                                        <div className=''>
-                                                            <img 
-                                                            src={p.avatar.url} alt="avatar" 
-                                                            />
-                                                            <div className=''>
-                                                                <p className=''>
-                                                                    {
-                                                                        groupDetails.admin === user._id?
-                                                                        <span className=''>
-                                                                          admin  
-                                                                        </span>
-                                                                        :null
-                                                                    }
-                                                                </p>
-                                                                <small className=''>
-                                                                    {p.email}
-                                                                </small>
-                                                            </div>
-                                                        </div>
-                                                                {groupDetails.admin === user._id?
-                                                                <div>
-                                                                    <Button
-                                                                    onClick={()=>{
-                                                                        const ok = confirm(
-                                                                            "Are sure you sure do you want to remove " + p.username +" ?"
-                                                                        )
-                                                                        if(ok){
-                                                                            removeParticipant(p._id||"")
-                                                                        }
-                                                                    }}
-                                                                    size="small"
-                                                                    severity='danger'
-                                                                    >
-                                                                        Remove
-                                                                    </Button>
-                                                                </div>
-                                                                :null
-                                                                }
-                                                            </div>
-                                                        <hr className=''/>
-                                                </React.Fragment>
-                                            ))}
-                                            {
-                                                groupDetails.admin === user._id?
-                                                <div className=''>
-                                                    {!addingParticipant?   
-                                                        <Button
-                                                        onClick ={()=>{setAddinParticipant(true)}}
-                                                        >
-                                                            <UserPlusIcon
-                                                            className=''
-                                                            />
-                                                            Add Participant
-                                                        </Button>
-                                                    
-                                                        :
-                                                        <div>
-                                                            <Select
-                                                            placeholder="Select a user to add"
-                                                            value={participantToBeAdded}
-                                                            options={users.map((user)=>(
-                                                            {
-                                                            label:user.username,
-                                                            value:user._id
-                                                            }
-                                                            ))}
-                                                            onChange ={({value})=>{
-                                                            setParticipantToBeAdded(value)
-                                                            }}
-                                                            />
-                                                            <Button
-                                                            onClick ={ ()=>addParticipant()}
-                                                            >
-                                                            +Add
-                                                            </Button>
-                                                            <Button
-                                                            severity="secondary"
-                                                            onChange={()=>{
-                                                            setAddinParticipant(false)
-                                                            setParticipantToBeAdded("")
-                                                            }}
-                                                            >
-                                                            Cancel
-                                                            </Button>
-                                                        </div>
-                                                    }
-                                                    <Button
-                                                    severity=''
-                                                    onClick ={()=>{
-                                                    const ok = confirm("Are you sure do you want to delete this group?")
-                                                    if(ok){
-                                                    deleteGroupChat()
-                                                    }
-                                                    }}
-                                                    >
-                                                        <TrashIcon className=''/>
-                                                        Delete Group
-                                                    </Button>
-                                                
-                                                </div>
-                                                :null
-                                            }
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </DialogPanel>
-                </TransitionChild>
         </Dialog>
       </Transition.Root>
     </div>

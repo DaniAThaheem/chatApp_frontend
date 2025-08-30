@@ -17,43 +17,47 @@ const MessageItem = ({message, isOwnMessage, isGroupChatMessage, deleteChatMessa
     <>
       {
         resizedImage?
-        <div className="">
+        <div className="h-full z-40 p-8 overflow-hidden w-full absolute inset-0 bg-black/70 flex  justify-center items-center">
             <XMarkIcon
-            className=''
+            className='absolute top-5 right-5 w-9 h-9 text-white cursor-pointer'
             onClick={()=>setResizedImage(null)}
             />
             <img 
             src={resizedImage} 
             alt="chat image" 
+            className='w-full h-full object-contain'
             />
         </div>
         :null
       }
       <div
       className={classNames(
-        "",
-        isOwnMessage?"":""
+        "flex justify-start items-end gap-3 max-w-lg min-w-sm",
+        isOwnMessage?"ml-auto":""
       )}
       >
         <img 
         src={message.sender?.avatar.url} 
         className={classNames(
-            "",
-            isOwnMessage?"":""
+            "h-7 w-7 object-cover rounded-full flex flex-shrink-0 ",
+            isOwnMessage?"order-2":"order-1"
         )}
-        alt="" 
+        alt="avatar" 
         />
         <div
         onMouseLeave={()=>setOpenOption(false)}
         className={classNames(
-            "",
-            isOwnMessage?"":""
+            "p-4 rounded-3xl flex flex-col cursor-pointer group hover:bg-secondary",
+            isOwnMessage
+            ?"order-1 rounded-br-none bg-primary"
+            :"order-2 rounded-bl-none bg-secondary"
         )}
         >
             {isGroupChatMessage && !isOwnMessage?
             <p
             className={classNames(
-                "",
+                "text-xs font-semibold mb-2 ",
+                ["text-success", "text-danger"][message.sender.username.length%2]
 
             )}
             >
@@ -67,14 +71,16 @@ const MessageItem = ({message, isOwnMessage, isGroupChatMessage, deleteChatMessa
                     {
                         isOwnMessage?
                         <button
-                        className={``}
+                        className={`self-center p-1 relative options-button`}
                         onClick={()=>setOpenOption(!openOption)}
                         >
                             <EllipsisVerticalIcon
-                            className=''
+                            className=' group-hover:w-6 group-hover:opacity-100 w-0 opacity-0 transition-all ease-in-out duration-100 text-zinc-300'
                             />
                             <div
-                            className={classNames("", openOption?"":"")}
+                            className={classNames(
+                                "z-30 text-left absolute bottom-0 translate-y-1 text-[10px] w-auto bg-dark rounded-2xl p-2 shadow-md border-[1px] border-secondary", 
+                                openOption?"block":"hidden")}
                             >
                                 <p
                                 onClick={(e)=>{
@@ -85,9 +91,10 @@ const MessageItem = ({message, isOwnMessage, isGroupChatMessage, deleteChatMessa
                                     }
                                 }}
                                 role='button'
-                                className=''
+                                className='border border-red-500 p-4 text-danger rounded-lg w-auto inline-flex items-center hover:bg-secondary'
                                 >
                                     <TrashIcon
+                                    className='h-4 w-4 mr-2'
                                     />
                                     Delete Message
                                 </p>
@@ -98,25 +105,25 @@ const MessageItem = ({message, isOwnMessage, isGroupChatMessage, deleteChatMessa
                     :null}
                     <div
                     className={classNames(
-                        "",
-                        message.attachements?.length ===1?"":"",
-                        message.attachements?.length ===2?"":"",
-                        message.attachements?.length ===3?"":"",
-                        message.content?"":""
+                        "grid max-w-7xl gap-2",
+                        message.attachements?.length ===1?"grid-cols-1":"",
+                        message.attachements?.length ===2?" grid-cols-2":"",
+                        message.attachements?.length ===3?" grid-cols-3":"",
+                        message.content?"mb-6":""
                     )}
                     >
                         {
                             message.attachements?.map((file)=>(
                                 <div
                                 key={file._id}
-                                className=''
+                                className=' group relative aspect-square rounded-xl overflow-hidden cursor-pointer'
                                 >
                                     <button
                                     onClick={()=>setResizedImage(file.url)}
-                                    className=''
+                                    className='absolute inset-0 z-20 flex justify-center items-center w-full gap-2 h-full bg-black/60 group-hover:opacity-100 opacity-0 transition-opacity ease-in-out duration-150'
                                     >
                                         <MagnifyingGlassPlusIcon
-                                        className=''
+                                        className='h-6 w-6 text-white'
                                         />
                                         <a
                                         href={file.url}
@@ -125,13 +132,13 @@ const MessageItem = ({message, isOwnMessage, isGroupChatMessage, deleteChatMessa
                                         >
                                             <ArrowDownTrayIcon
                                             title='download'
-                                            className=''
+                                            className=' hover:text-zinc-400 h-6 w-6 text-white cursor-pointer'
                                             />
 
                                         </a>
                                     </button>
                                     <img
-                                    className=''
+                                    className='h-full w-full object-cover'
                                     src={file.url}
                                     />
 
@@ -144,18 +151,20 @@ const MessageItem = ({message, isOwnMessage, isGroupChatMessage, deleteChatMessa
             :null}
             {
                 message.content?
-                <div>
+                <div className='relative flex justify-between'>
                     {
                         isOwnMessage?
                         <button
-                        className=''
+                        className='self-center relative options-button'
                         onClick={()=>setOpenOption(!openOption)}
                         >
                             <EllipsisVerticalIcon
-                            className=''
+                            className='group-hover:w-4 group-hover:opacity-100 w-0 opacity-0 transition-all ease-in-out duration-100 text-zinc-300'
                             />
                             <div
-                            className={classNames("", openOption?"":"")}
+                            className={classNames(
+                                " delete-menu z-20 text-left -translate-x-24 -translate-y-4 absolute bottom-0 text-[10px] w-auto bg-dark rounded-2xl shadow-md border-[1px]  border-secondary", 
+                                openOption?"block":"hidden")}
                             >
                                 <p
                                 onClick={(e)=>{
@@ -166,9 +175,10 @@ const MessageItem = ({message, isOwnMessage, isGroupChatMessage, deleteChatMessa
                                     }
                                 }}
                                 role='button'
-                                className=''
+                                className='p-2 text-danger rounded-lg w-auto inline-flex items-center hover:bg-secondary'
                                 >
                                     <TrashIcon
+                                    className='h-4 w-auto mr-1'
                                     />
                                     Delete Message
                                 </p>
@@ -177,7 +187,7 @@ const MessageItem = ({message, isOwnMessage, isGroupChatMessage, deleteChatMessa
                         :null
                     }
                     <p
-                    className=''
+                    className='text-sm'
                     >
                         {message.content}
                     </p>
@@ -186,14 +196,14 @@ const MessageItem = ({message, isOwnMessage, isGroupChatMessage, deleteChatMessa
             }
             <p
             className={classNames(
-                "",
-                isOwnMessage?"":""
+                "mt-1.5 self-end text-[10px] inline-flex items-center ",
+                isOwnMessage?"text-zinc-50":"text-zinc-400"
             )}
             >
                 {
                     message.attachements?.length>0?
                     <PaperClipIcon
-                    className=''
+                    className='h-4 w-4 mr-2'
                     />
                     :null
                 }

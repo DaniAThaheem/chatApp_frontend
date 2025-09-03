@@ -3,7 +3,7 @@
 
 //This takes the class names and combines them into a single string so that Tailwind can properly apply the styles
 export const classNames = (...className)=>{
-    return className.filter(Boolean).join("")
+    return className.filter(Boolean).join(" ")
 }
 
 export const isBrowser = typeof window !== "undefined"
@@ -47,6 +47,7 @@ export const requestHandler = async(
         const response = await api()
         const {data} = response
         if(data.success){
+            console.log("Data in request handler", data)
             onSuccess(data)
         }
     } catch (error) {
@@ -86,7 +87,7 @@ export const getChatObjectMetaData = (chat, loggedInUser)=>{
     const participant = chat.participants.find(
       (p) => p._id !== loggedInUser?._id
     );
-    
+    console.log(participant)
     return {
       avatar: participant?.avatar.url, 
       title: participant?.username, 

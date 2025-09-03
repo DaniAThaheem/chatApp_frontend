@@ -11,8 +11,8 @@ import MessageItem from "../components/chat/MessageItem.jsx"
 import ChatItem from '../components/chat/ChatItem.jsx'
 import Typing from '../components/chat/Typing.jsx'
 import Input from "../components/basic/Input.jsx"
-import { useAuth } from '../context/AuthContext.jsx'
-import { useSocket } from "../context/SocketContext.jsx"
+import { useAuth } from '../context/useAuth.js'
+import { useSocket } from "../context/useSocke.js"
 import { LOCALSTORAGE, getChatObjectMetaData, classNames, requestHandler } from '../utils/index.js'
 
 
@@ -50,8 +50,8 @@ const Chat = () => {
   const [isTyping, setIsTyping] = useState(false)
   const [selfTyping, setSelfTyping] = useState(false)
 
-  const [message, setMessage] = useState(false)
-  const [localQuery, setLocalQuery] = useState(false)
+  const [message, setMessage] = useState("")
+  const [localQuery, setLocalQuery] = useState("")
 
   const [attachedFiles, setAttachedFiles] = useState(false)
 
@@ -133,7 +133,7 @@ const Chat = () => {
     }
 
     socket.emit(STOP_TYPING_EVENT, currentChat.current?._id)
-
+    console.log(attachedFiles, message, currentChat.current._id)
     await requestHandler(
       async()=> await sendMessage(
         currentChat.current?._id,
@@ -219,7 +219,13 @@ const Chat = () => {
       setUnreadMessages((prev)=> prev.filter((msg)=>msg._id !== message._id))
     }
     else{
-      setMessage((prev)=>prev.filter((msg)=> msg._id !== message._id))
+      
+      setMessages((prev)=>{
+        console.log(prev)
+        prev =prev.filter((msg)=> msg._id !== message._id)
+        return prev
+      }
+      )
     }
     updateChatLastMessageOnDeletion(message.chat, message)
   }
@@ -301,8 +307,7 @@ const Chat = () => {
   }, [socket, chats])
 
 
-
-
+  console.log(currentChat.current, "Current chat")
   return (
     <>
       <AddChatModal
@@ -310,7 +315,7 @@ const Chat = () => {
         onClose={()=>setOpenAddChat(false)}
         onSuccess={()=>getChats()}
       />
-      <div className="w-full justify-between items-stretch h-screen flex flex-shrink-0">
+      <div className="w-screen justify-between items-stretch h-screen flex flex-shrink-0 overflow-x-auto overflow-y-hidden">
         <div className="w-1/3 relative ring-white overflow-y-auto px-4">
           <div className="z-10 w-full sticky top-0 bg-dark py-4 flex justify-between items-center gap-4">
             <button
@@ -416,7 +421,7 @@ const Chat = () => {
               </div>
               <div
               className={classNames(
-                "p-8 overflow-y-auto flex flex-col-reverse gap-6 w-full",
+                "p-8 overflow-y-auto flex flex-col-reverse gap-6 w-full ",
                 attachedFiles.length>0?
                 "h-[calc(100vh-336px)]"
                 :"h-[calc(100vh-176px)]"
@@ -434,7 +439,7 @@ const Chat = () => {
                     {messages.map((message)=>(
                       <MessageItem
                       key={message._id}
-                      isOwnMessage={message.sender._id === currentChat.current?._id}
+                      isOwnMessage={user._id.toString() === message.sender._id.toString()}
                       isGroupChatMessage={currentChat.current?.isGroupChat}
                       message={message}
                       deleteChatMessage={deleteChatMessage}

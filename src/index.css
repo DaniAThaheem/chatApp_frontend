@@ -5,11 +5,11 @@
 
 
 @theme{
-  --color-primary: "#6b8afd";
-  --color-secondary: "#2e333d";
-  --color-dark: "#212328";
-  --color-danger: "#eb3330";
-  --color-success: "#4aac68";
+  --color-primary: #6b8afd;
+  --color-secondary: #2e333d;
+  --color-dark: #212328;
+  --color-danger: #eb3330;
+  --color-success: #4aac68;
 }
 
 
@@ -41,21 +41,21 @@
 
 
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  /* font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
-  font-weight: 400;
+  font-weight: 400; */
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
   background-color: #242424;
 
-  font-synthesis: none;
+  /* font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  -moz-osx-font-smoothing: grayscale; */
 }
 
-a {
+/* a {
   font-weight: 500;
   color: #646cff;
   text-decoration: inherit;
@@ -107,4 +107,4 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
-}
+} */

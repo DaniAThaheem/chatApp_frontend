@@ -13,7 +13,7 @@ const AddChatModal = ({open, onClose, onSuccess}) => {
     const [groupName, setGroupName] = useState("")
     const [isGroupChat, setIsGroupChat] = useState(false)
     const [groupParticipants, setGroupParticipants] = useState([])
-    const [selectedUserId, setSelectedUserId] = useState(null)
+    const [selectedUserId, setSelectedUserId] = useState("")
     const [creatingChat, setCreatingChat] = useState(false)
 
 
@@ -31,7 +31,7 @@ const AddChatModal = ({open, onClose, onSuccess}) => {
 
     const createNewChat = async()=>{
         if(!selectedUserId) return alert("Please select user")
-        
+        console.log(selectedUserId, "user id")
         await requestHandler(
             async()=> await createUserChat(selectedUserId),
             setCreatingChat,
@@ -41,6 +41,7 @@ const AddChatModal = ({open, onClose, onSuccess}) => {
                     alert("User chat already exists")
                     return
                 }
+                console.log(data, "while creation")
                 onSuccess(data)
                 handleClose()
             },
@@ -59,7 +60,7 @@ const AddChatModal = ({open, onClose, onSuccess}) => {
                 name:groupName,
                 participants:groupParticipants
             }),
-            setCreatingChat(),
+            setCreatingChat,
             (res)=>{
                 const {data} = res
                 onSuccess(data)
@@ -79,14 +80,23 @@ const AddChatModal = ({open, onClose, onSuccess}) => {
         onClose()
     }
 
+     const handleCreateClick = () => {
+        console.log("Create button clicked", { isGroupChat, selectedUserId, groupParticipants, groupName });
+        if (isGroupChat) {
+            createNewGroupChat();
+        } else {
+            createNewChat();
+        }
+    }
+
     useEffect(()=>{
         if(!open) return
         getUsers()
     },[open])
-
+    console.log("selected user id", selectedUserId)
   return (
     <Transition.Root as={Fragment} show={open}>
-        <Dialog as='div' className={`relative z-10`} onClose={handleClose}>
+        <Dialog as='div' className={`relative z-100`} onClose={handleClose}>
             <TransitionChild
             as={Fragment}
             enter='ease-out duration-300'
@@ -96,7 +106,7 @@ const AddChatModal = ({open, onClose, onSuccess}) => {
             leaveFrom='opacity-100'
             leaveTo='opacity-0'
             >
-                <div className='flex inset-0 bg-black/50 bg-opacity-75 transition-opacity' />
+                <div className='fixed inset-0 bg-black/50 bg-opacity-75 transition-opacity' />
             </TransitionChild>
             <div className="fixed inset-0 z-10 overflow-y-visible">
                 <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
@@ -110,7 +120,7 @@ const AddChatModal = ({open, onClose, onSuccess}) => {
                     leaveTo='opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95'
                     >
                         <DialogPanel
-                        className={` relat transform overflow-x-hidden rounded-lg bg-dark px-4 pb-4 pt-5  text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-3xl sm:p-6`}
+                        className={` relative transform overflow-x-hidden rounded-lg bg-black/50 px-4 pb-4 pt-5 backdrop-blur-sm  text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-3xl sm:p-6`}
                         style={{
                             overflow:'inherit'
                         }}
@@ -146,27 +156,27 @@ const AddChatModal = ({open, onClose, onSuccess}) => {
                                         <span
                                             className={classNames(
                                                 isGroupChat?"translate-x-5 bg-success":"translate-x-0 bg-white",
-                                                "pointer-events-none inline-block h-5 w-5 transform rounded-full shadow ring-0 transition duration-200 ease-in-out"
+                                                "pointer-events-none inline-flex h-5 w-5 transform rounded-full shadow ring-0 transition duration-200 ease-in-out"
                                             )}
                                             aria-hidden="true"
                                         />
-                                        <Switch.Label as='span' className={`ml-3 text-sm`}>
-                                            <span
-                                                className={classNames(
-                                                    "font-medium text-white",
-                                                    isGroupChat?"":"opacity-40"
-                                                )}
-                                            >
-                                                Is it a group chat?
-                                            </span>{" "}
-                                        </Switch.Label>
                                     </Switch>
+                                    <Switch.Label as='span' className={`ml-3 text-sm`}>
+                                        <span
+                                            className={classNames(
+                                                "font-medium text-white",
+                                                isGroupChat?"":"opacity-40"
+                                            )}
+                                        >
+                                            Is it a group chat?
+                                        </span>{" "}
+                                    </Switch.Label>
                                 </Switch.Group> 
                                     {
                                         isGroupChat?
                                         <div className='my-5'>
                                             <Input
-                                            placehodler={`Enter the group name`}
+                                            placeholder={`Enter the group name`}
                                             value={groupName}
                                             onChange={(e)=>setGroupName(e.target.value)}
                                             />
@@ -175,12 +185,12 @@ const AddChatModal = ({open, onClose, onSuccess}) => {
                                     }
                                     <div className='my-5'>
                                         <Select
-                                        placehodler={
+                                        placeholder={
                                             isGroupChat?
                                             "Select Group Participants..."
                                             :"Select a user to select"
                                         }
-                                        value={isGroupChat?"":selectedUserId||""}
+                                        value={isGroupChat?"":selectedUserId}
                                         options = {
                                             users.map((user)=>(
                                                 {
@@ -194,7 +204,9 @@ const AddChatModal = ({open, onClose, onSuccess}) => {
                                                 setGroupParticipants([...groupParticipants, value])
                                             }
                                             else{
+                                                console.log(value, "seting user id")
                                                 setSelectedUserId(value)
+                                                console.log(selectedUserId, "selected user id")
                                             }
                                         }}
                                         />
@@ -243,14 +255,14 @@ const AddChatModal = ({open, onClose, onSuccess}) => {
                                 disabled={creatingChat}
                                 severity='secondary'
                                 onClick={handleClose}
-                                className="w-1/2"
+                                className="w-1/2 p-3 hover:bg-black border-[0.1px] border-gray-700 rounded-b-sm "
                                 >
                                     Close
                                 </Button>
                                 <Button
                                 disabled={creatingChat}
-                                onClick={isGroupChat? createNewGroupChat: createNewChat}
-                                className="w-1/2"
+                                onClick={handleCreateClick}
+                                className="w-1/2 p-3 hover:bg-black border-[0.1px] border-gray-700 rounded-b-sm"
                                 >
                                     Create
                                 </Button>

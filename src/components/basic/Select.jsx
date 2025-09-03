@@ -1,26 +1,37 @@
-import React, { useEffect, useState } from 'react'
+import React, {  useState } from 'react'
 import {Combobox, ComboboxButton, ComboboxInput, ComboboxOption, ComboboxOptions} from "@headlessui/react"
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
 import {classNames} from "../../utils/index.js"
 
 const Select = (props) => {
-    const {options, value, placeholder, onChange} = props
-    const [localOptions, setLocalOptions] = useState([])
-    useEffect(()=>{
-        setLocalOptions(options)
-    },[options])
+    const {options=[], value, placeholder, onChange} = props
+    const [query, setQuery] = useState("")
+    const filteredOptions = query === '' 
+    ? options 
+    : options.filter((option) =>
+        option.label.toLowerCase().includes(query.toLowerCase())
+        )
+
+    const handleInputChange = (event) => {
+        console.log(event.target.value)
+        setQuery(event.target.value)
+    }
+    const handleChange = (val)=>{
+        console.log(val, "Changed val")
+        onChange(val)
+    }
   return (
     <Combobox
-    className={"w-full"}
+    className={`w-full ${props.className}`}
     value={options.find((o)=>o.value === value)}
-    onChange={(val)=>onChange(val)}
+    onChange={handleChange}
     as={"div"}
     >
         <div className='relative mt-2'>
             <ComboboxButton className={"w-full"}>
                 <ComboboxInput
                 placeholder={placeholder}
-                onChange={(e)=>setLocalOptions(options.filter((op)=>op.label.includes(e.target.value)))}
+                onChange={handleInputChange}
                 displayValue={(option)=>option?.label}
                 className={"block w-full rounded-xl border-0 py-4 px-5 bg-secondary outline-[1px] outline-zinc-400 text-white font-light placeholder:text-white/70 focus:ring-[1px] focus:ring-white"}
                 />
@@ -32,10 +43,10 @@ const Select = (props) => {
                 />
             </ComboboxButton>
             {
-                localOptions.length>0 &&
+                filteredOptions.length>0 &&
                 <ComboboxOptions className={""}>
                     {
-                        localOptions.map((option)=>(
+                        filteredOptions.map((option)=>(
                             <ComboboxOption
                             key={option.value}
                             value={option}

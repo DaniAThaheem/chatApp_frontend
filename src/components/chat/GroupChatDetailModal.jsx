@@ -23,7 +23,7 @@ import {
 
 import {
     useAuth
-} from "../../context/AuthContext.jsx"
+} from "../../context/useAuth.js"
 import {
     requestHandler
 } from '../../utils'
@@ -32,13 +32,17 @@ import Input from "../basic/Input.jsx"
 import Select from "../basic/Select.jsx"
 const GroupChatDetailModal = ({open, onClose, chatId, onGroupDelete}) => {
     const {user} = useAuth()
-    const [addingParticipant, setAddinParticipant] = useState(false)
+    const [addingParticipant, setAddingParticipant] = useState(false)
     const [renamingGroup, setRenamingGroup] = useState(false)
     const [participantToBeAdded, setParticipantToBeAdded] = useState("")
     const [newGroupName, setNewGroupName] = useState("")
     const [groupDetails, setGroupDetails] = useState(null)
     const [users, setUser] = useState([])
 
+    const handleRenameGroup = (e)=>{
+        console.log(e.target.value)
+        setNewGroupName(e.target.value)
+    }
     const handleGroupNameUpdate = async()=>{
         if(!newGroupName){
             return alert("Group name is required")
@@ -71,10 +75,10 @@ const GroupChatDetailModal = ({open, onClose, chatId, onGroupDelete}) => {
             return alert("You are not admin")
         }
         await requestHandler(
-            async()=> await deleteGroup(),
+            async()=> await deleteGroup(chatId),
             null,
             ()=>{
-                onGroupDelete()
+                onGroupDelete(chatId)
                 handleClose()
             },
             alert
@@ -90,7 +94,7 @@ const GroupChatDetailModal = ({open, onClose, chatId, onGroupDelete}) => {
             null,
             (res)=>{
 
-                const data = {res}
+                const {data} = res
 
                 const updatedGroupDetail = {
                     ...groupDetails,
@@ -144,7 +148,7 @@ const GroupChatDetailModal = ({open, onClose, chatId, onGroupDelete}) => {
   return (
     <div>
       <Transition.Root show={open} as={Fragment}>
-        <Dialog as='div' className={` relative z-40`} onClose={handleClose}>
+        <Dialog as='div' className={` relative z-100`} onClose={handleClose}>
             <TransitionChild
                 as={Fragment}
                 enter='transform transition ease-in-out duration-500 sm:duration-700'
@@ -154,7 +158,7 @@ const GroupChatDetailModal = ({open, onClose, chatId, onGroupDelete}) => {
                 leaveFrom='opacity-100'
                 leaveTo='opacity-0'
             >
-                <div className=' fixed inset-0 bg-black/50'/>
+                <div className=' fixed inset-0 bg-black/50 '/>
             </TransitionChild>
                 <div className="fixed inset-0 overflow-hidden">
                     <div className=" absolute inset-0 overflow-hidden">
@@ -169,7 +173,7 @@ const GroupChatDetailModal = ({open, onClose, chatId, onGroupDelete}) => {
                                 leaveTo='translate-x-full'
                             >
                                 <DialogPanel className={` pointer-events-auto w-screen max-w-2xl`}>
-                                    <div className=" flex h-full flex-col overflow-y-scroll">
+                                    <div className=" flex h-full flex-col overflow-y-scroll backdrop-blur-[30px]">
                                         <div className="px-4 sm:px-6">
                                             <div className="flex items-start justify-between">
                                                 <div className="ml-3 flex h-7 items-center">
@@ -191,7 +195,7 @@ const GroupChatDetailModal = ({open, onClose, chatId, onGroupDelete}) => {
                                         <div className="relative mt-6 flex-1 px-4 sm:px-6">
                                             <div className="flex flex-col justify-center items-start">
                                                 <div className="flex pl-16 justify-center items-center relative w-full h-max gap-3">
-                                                    {groupDetails?.participants.slice(0,3).map((p)=>
+                                                    {groupDetails?.participants?.slice(0,3).map((p)=>
                                                         <img 
                                                         className='w-24 h-24 -ml-16 rounded-full outline-4 outline-secondary'
                                                         src={p.avatar.url}
@@ -208,7 +212,7 @@ const GroupChatDetailModal = ({open, onClose, chatId, onGroupDelete}) => {
                                                         <Input
                                                         placeholder={"Enter new group name..."}
                                                         value={newGroupName}
-                                                        onClick={(e)=>setNewGroupName(e)}
+                                                        onChange={handleRenameGroup}
                                                         />
                                                         <Button
                                                         severity='primary'
@@ -229,9 +233,9 @@ const GroupChatDetailModal = ({open, onClose, chatId, onGroupDelete}) => {
                                                             {groupDetails?.name}
                                                         </h1>
                                                         {
-                                                            groupDetails.admin === user._id?
+                                                            groupDetails?.admin === user._id?
                                                             <button
-                                                            onClick={()=>setRenamingGroup(false)}
+                                                            onClick={()=>setRenamingGroup(true)}
                                                             >
                                                                 <PencilIcon
                                                                 className='w-5 h-5 ml-4'
@@ -243,31 +247,31 @@ const GroupChatDetailModal = ({open, onClose, chatId, onGroupDelete}) => {
                                                     </div>
                                                     }
                                                     <p className='mt-2 text-zinc-400 text-sm'>
-                                                        Group . {groupDetails.participants.length}{""}
+                                                        Group . {groupDetails?.participants?.length}{" "}
                                                         participants
                                                     </p>
                                                 </div>
                                                 <hr className='border-[0.1px] border-zinc-600 my-5 w-full' />
                                                 <div className='w-full'>
-                                                    <p className='inline-flex items-center'>
-                                                        <UserGroupIcon className='' />{""}
-                                                        {groupDetails.participants.length} Participants
+                                                    <p className='inline-flex flex-row items-center'>
+                                                        <UserGroupIcon className='h-5 w-5 mr-1' />{" . "}
+                                                        {groupDetails?.participants?.length} Participants
                                                     </p>
-                                                    <div className='h-6 w-6 mr-2'>
-                                                        {groupDetails.participants.map((p)=>(
+                                                    <div className='h-6 w-[100%] mr-2'>
+                                                        {groupDetails?.participants?.map((p)=>(
                                                             <React.Fragment key={p._id}>
                                                                 <div className='flex justify-between  items-center w-full py-4'>
                                                                     <div className='flex justify-start items-start gap-3 w-full'>
                                                                         <img 
-                                                                        src={p.avatar.url} 
+                                                                        src={p?.avatar?.url} 
                                                                         className='h-12 w-12 rounded-full'
                                                                         alt="avatar" 
                                                                         />
                                                                         <div >
                                                                             <p className='text-white font-semibold text-sm inline-flex items-center w-full'>
-                                                                                {p.username}{""}
+                                                                                {p?.username}{""}
                                                                                 {
-                                                                                    groupDetails.admin === p._id?
+                                                                                    groupDetails?.admin === p?._id?
                                                                                     <span className='ml-2 text-[10px] px-4 bg-success/10 border-[0.1px] border-success rounded-full text-success'>
                                                                                     admin  
                                                                                     </span>
@@ -275,39 +279,41 @@ const GroupChatDetailModal = ({open, onClose, chatId, onGroupDelete}) => {
                                                                                 }
                                                                             </p>
                                                                             <small className='text-zinc-400'>
-                                                                                {p.email}
+                                                                                {p?.email}
                                                                             </small>
                                                                         </div>
-                                                                    </div>
-                                                                            {groupDetails.admin === user._id?
-                                                                            <div>
-                                                                                <Button
-                                                                                onClick={()=>{
-                                                                                    const ok = confirm(
-                                                                                        "Are sure you sure do you want to remove " + p.username +" ?"
-                                                                                    )
-                                                                                    if(ok){
-                                                                                        removeParticipant(p._id||"")
-                                                                                    }
-                                                                                }}
-                                                                                size="small"
-                                                                                severity='danger'
-                                                                                >
-                                                                                    Remove
-                                                                                </Button>
-                                                                            </div>
-                                                                            :null
-                                                                            }
+                                                                    </div>    
+                                                                    {groupDetails?.admin === user?._id?
+                                                                        <div>
+                                                                            <Button
+                                                                            onClick={()=>{
+                                                                                const ok = confirm(
+                                                                                    "Are sure you sure do you want to remove " + p.username +" ?"
+                                                                                )
+                                                                                if(ok){
+                                                                                    removeParticipant(p?._id||"")
+                                                                                }
+                                                                            }}
+                                                                            size="small"
+                                                                            severity='danger'
+                                                                            >
+                                                                                Remove
+                                                                            </Button>
                                                                         </div>
-                                                                    <hr className='border-[0.1px] border-zinc-600 my-5 w-full'/>
+                                                                        :null
+                                                                    }
+                                                                    
+                                                                </div>
+                                                                <hr className='border-[0.1px] border-zinc-600 my-5 w-full'/>
                                                             </React.Fragment>
                                                         ))}
                                                         {
-                                                            groupDetails.admin === user._id?
+                                                            groupDetails?.admin === user._id?
                                                             <div className='w-full my-5 flex flex-col justify-center items-center gap-4'>
                                                                 {!addingParticipant?   
                                                                     <Button
-                                                                    onClick ={()=>{setAddinParticipant(true)}}
+                                                                    onClick ={()=>{setAddingParticipant(true)}}
+                                                                    
                                                                     >
                                                                         <UserPlusIcon
                                                                         className='w-5 h-5 mr-1'
@@ -316,34 +322,39 @@ const GroupChatDetailModal = ({open, onClose, chatId, onGroupDelete}) => {
                                                                     </Button>
                                                                 
                                                                     :
-                                                                    <div className='w-full flex justify-center items-center gap-2'>
+                                                                    <div className='w-[100%] inline-flex flex-col justify-center items-center gap-2  px-6'>
                                                                         <Select
+                                                                        
                                                                         placeholder="Select a user to add"
                                                                         value={participantToBeAdded}
-                                                                        options={users.map((user)=>(
+                                                                        options={users?.map((user)=>(
                                                                         {
-                                                                        label:user.username,
-                                                                        value:user._id
+                                                                        label:user?.username,
+                                                                        value:user?._id
                                                                         }
                                                                         ))}
                                                                         onChange ={({value})=>{
                                                                         setParticipantToBeAdded(value)
                                                                         }}
                                                                         />
-                                                                        <Button
-                                                                        onClick ={ ()=>addParticipant()}
-                                                                        >
-                                                                        +Add
-                                                                        </Button>
-                                                                        <Button
-                                                                        severity="secondary"
-                                                                        onChange={()=>{
-                                                                        setAddinParticipant(false)
-                                                                        setParticipantToBeAdded("")
-                                                                        }}
-                                                                        >
-                                                                        Cancel
-                                                                        </Button>
+                                                                        <div className='w-full gap-4 flex items-center justify-center'>
+                                                                            <Button
+                                                                            onClick ={addParticipant}
+                                                                            >
+                                                                            +Add
+                                                                            </Button>
+                                                                            <Button
+                                                                            severity="secondary"
+                                                                            onClick={()=>{
+                                                                            setAddingParticipant(false)
+                                                                            setParticipantToBeAdded("")
+                                                                            }}
+                                                                            >
+                                                                            Cancel
+                                                                            </Button>
+
+                                                                        </div>
+                                                                        
                                                                     </div>
                                                                 }
                                                                 <Button

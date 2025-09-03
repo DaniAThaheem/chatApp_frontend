@@ -3,17 +3,17 @@ import {
     EllipsisVerticalIcon,
     PaperClipIcon,
     TrashIcon,
-} from "@heroicons/react"
+    InformationCircleIcon
+} from "@heroicons/react/20/solid"
 import {requestHandler, classNames, getChatObjectMetaData} from "../../utils"
 import moment from 'moment'
 import {deleteOneOnOneChat} from "../../api/index.js"
-import  {useAuth} from "../../context/AuthContext.jsx"
+import  {useAuth} from "../../context/useAuth.js"
 import GroupChatDetailModal from './GroupChatDetailModal.jsx'
-import { InformationCircleIcon } from '@heroicons/react/20/solid'
 const ChatItem = ({chat, onChatDelete, isActive, unreadCount=0, onClick}) => {
 
   const {user} = useAuth()
-  const [openOptions, setOpenOptions] = useState(false)
+  const [openOptions, setOpenOptions] = useState("")
   const [openGroupInfo, setOpenGroupInfo] = useState(false)
 
   const deleteChat = async()=>{
@@ -21,6 +21,7 @@ const ChatItem = ({chat, onChatDelete, isActive, unreadCount=0, onClick}) => {
       async()=> await deleteOneOnOneChat(chat._id),
       null,
       ()=>{
+        console.log(chat, "in chat items")
         onChatDelete(chat._id)
       },
       alert
@@ -52,9 +53,9 @@ const ChatItem = ({chat, onChatDelete, isActive, unreadCount=0, onClick}) => {
         }
         className={classNames("self-center p-1 relative")}
         >
-          <EllipsisVerticalIcon className=""/>
+          <EllipsisVerticalIcon className="h-4 w-4"/>
           <div className={classNames(
-            "h-6 group-hover:w-6  group-hover:opacity-100 w-0 opacity-0  transition-all ease-in-out duration-100  text-zinc-300",
+            "h-6 group-hover:w-fit  group-hover:opacity-100 w-fit opacity-10  transition-all ease-in-out duration-100  text-zinc-300",
             openOptions?"block":"hidden"
           )}>
             {
@@ -62,12 +63,12 @@ const ChatItem = ({chat, onChatDelete, isActive, unreadCount=0, onClick}) => {
               <p
               onClick={(e)=>{
                 e.stopPropagation()
-                setOpenOptions(true)
+                setOpenGroupInfo(true)
               }}
               role='button'
-              className='p-4 w-full rounded-lg inline-flex items-center hover:bg-secondary'
+              className='p-2 w-full rounded-lg inline-flex items-center hover:bg-black text-[12px]'
               >
-                <InformationCircleIcon className='h-4 w-4 mr-2'/>
+                <InformationCircleIcon className='h-8 w-8 mr-2 '/>
                 About Group
               </p>
               :
@@ -80,9 +81,9 @@ const ChatItem = ({chat, onChatDelete, isActive, unreadCount=0, onClick}) => {
                 }
               }}
               role='button'
-              className='p-4 text-danger rounded-lg w-full inline-flex items-center hover:bg-secondary'
+              className='p-2 text-danger rounded-lg w-full inline-flex items-center hover:bg-black text-[12px]'
               >
-                <TrashIcon className='h-4 w-4 mr-2'/>
+                <TrashIcon className='h-8 w-8 mr-2'/>
                 Delete Chat
               </p>
             }
@@ -141,7 +142,7 @@ const ChatItem = ({chat, onChatDelete, isActive, unreadCount=0, onClick}) => {
           {
             unreadCount <= 0? null
             :
-            <span className='bg-success h-2 w-2 aspect-square flex-shrink-0 text-white text-xs rounded-full inline-flex justify-center items-center'>
+            <span className='bg-success h-6 w-6 aspect-square flex-shrink-0 text-white text-xs rounded-full inline-flex justify-center items-center'>
               {unreadCount>9 ? "9+": unreadCount}
             </span>
           }

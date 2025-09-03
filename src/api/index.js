@@ -28,7 +28,9 @@ const registerUser = (data)=>{
 }
 
 const loginUser = (data)=>{
-    return apiClient.post("/users/login", data)
+    const dataOfApi = apiClient.post("/users/login", data)
+    console.log(dataOfApi, "Here it is")
+    return dataOfApi
 }
 
 const logoutUser = ()=>{
@@ -40,15 +42,18 @@ const getChatMessages = (chatId)=>{
 }
 
 const sendMessage = (chatId, content, attachments)=>{
+    console.log(chatId, content, attachments)
     const formData = new FormData()
     if(content){
         formData.append("content", content)
     }
     if(attachments){
-        attachments.map((attachment)=>{
-            formData.append("attachements", attachment)
+        attachments.forEach((attachment)=>{
+            formData.append("attachments", attachment)
+            console.log("appending attachment ", formData, attachment)
         })
     }
+    console.log(formData)
     return apiClient.post(`/messages/${chatId}`, formData)
 }
 

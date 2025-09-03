@@ -1,7 +1,9 @@
 import { LockClosedIcon } from '@heroicons/react/20/solid'
 import React, { useState } from 'react'
-import { Navigate } from 'react-router-dom'
-import { useAuth } from '../context/AuthContext'
+import { Link } from 'react-router-dom'
+import { useAuth } from '../context/useAuth.js'
+import Input from '../components/basic/Input'
+import Button from '../components/basic/Button'
 
 const Register = () => {
   const [data, setData] = useState(
@@ -22,9 +24,9 @@ const Register = () => {
 
   const handleRegister = async() => {await register(data)}
   return (
-    <div className='flex justify-center items-center flex-col h-screen w-screen'>
-      <h1 className=' text-3xl font-bol'>Chat App</h1>
-      <div className='max-w-5xl w-1/2 p-8 flex justify-center items-center gap-5 flex-col bg-dark shadow-md rounded-2xl my-16 border-secondary border-[1px]'>
+    <div className='flex justify-center items-center flex-col h-screen w-screen overflow-y-auto '>
+      <h1 className=' box-border text-3xl font-bold pt-30'>Chat App</h1>
+      <form className='max-w-5xl w-1/2 p-8 flex justify-center items-center gap-5 flex-col bg-dark shadow-md rounded-2xl my-16 border-secondary border-[1px]'>
         <h1 className="inline-flex items-center text-2xl mb-4 flex-col">
           <LockClosedIcon className='h-8 w-8 mb-2' />Register
         </h1>
@@ -53,13 +55,13 @@ const Register = () => {
           Register
         </Button>
         <small className='text-zinc-300'>
-          Already have an account?
-          <Navigate className="text-primary hover:underline" to={"/login"}>
+          Already have an account?{" "}
+          <Link className="text-primary hover:underline" to={"/login"}>
             Login
-          </Navigate>
+          </Link>
         </small>
 
-      </div>
+      </form>
     </div>
   )
 }

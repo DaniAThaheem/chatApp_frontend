@@ -1,11 +1,11 @@
 import React from 'react'
 import { classNames } from '../../utils/index.js'
 
-const Button = ({fullWidth, severity="primary", size="base", ...props}) => {
+const Button = ({fullWidth, severity="primary", size="base", children, ...props}) => {
   return (
     <button
     className={classNames(
-        " rounded-full inline-flex flex-shrink-0 justify-center items-center text-center text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white shadow-sm",
+        " border-[1px] border-white rounded-full inline-flex flex-shrink-0 justify-center items-center text-center text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white shadow-sm",
         fullWidth?"w-full":"",
         severity==="secondary"?
         "bg-secondary hover:bg-secondary/80 disabled:bg-secondary/50  outline-[1px] outline-zinc-400"
@@ -20,8 +20,9 @@ const Button = ({fullWidth, severity="primary", size="base", ...props}) => {
         "text-base px-4 py-3",
         props.className||""
     )}
+    {...props}
     >
-        {props.children}
+        {children}
     </button>
   )
 }

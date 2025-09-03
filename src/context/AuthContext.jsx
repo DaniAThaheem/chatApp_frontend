@@ -1,4 +1,4 @@
-import React, {useState, useEffect, createContext, useContext} from 'react'
+import React, {useState, useEffect, createContext} from 'react'
 import { LOCALSTORAGE, requestHandler } from '../utils'
 import {registerUser, loginUser, logoutUser} from "../api/index.js"
 import { useNavigate } from 'react-router-dom'
@@ -15,7 +15,7 @@ const AuthContext = createContext(
     }
 )
 
-const useAuth = ()=> { return useContext(AuthContext)}
+
 
 
 const AuthProvider = (
@@ -29,11 +29,17 @@ const AuthProvider = (
     const navigate = useNavigate()
 
     const login = async (data)=>{
+        console.log("iin the login section")
         await requestHandler(
             async()=> await loginUser(data),
             setIsLoading,
             (res)=>{
-                const {data} = res
+                console.log(res, "response in login")
+                const resonseData = res.data
+                console.log(resonseData, "response data is here")
+                const data = resonseData[0]
+                console.log(data, "data is here")
+                console.log(data, "data in login")
                 setUser(data.user)
                 setToken(data.accessToken)
                 LOCALSTORAGE.set("user", data.user)
@@ -92,8 +98,7 @@ const AuthProvider = (
 
 export {
     AuthContext,
-    AuthProvider,
-    useAuth
+    AuthProvider
 }
 
 

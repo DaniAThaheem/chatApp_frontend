@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from 'react'
+import React, { createContext, useEffect, useState } from 'react'
 import { LOCALSTORAGE } from '../utils'
 import { io } from 'socket.io-client'
 
@@ -20,7 +20,6 @@ const SocketContext = createContext(
     }
 )
 
-const useSocket = ()=> useContext(SocketContext)
 
 const SocketProvider = ({children})=>{
 
@@ -40,7 +39,6 @@ const SocketProvider = ({children})=>{
 
 export {
    SocketContext,
-   useSocket,
    SocketProvider
 
 

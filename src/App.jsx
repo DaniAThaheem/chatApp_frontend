@@ -2,7 +2,7 @@ import './App.css'
 import Chat from './pages/Chat'
 import Login from './pages/Login'
 import Register from './pages/Register'
-import { useAuth } from './context/AuthContext'
+import { useAuth } from './context/useAuth.js'
 import { Routes, Route, Navigate,  } from 'react-router-dom'
 import PublicRoute from "./components/basic/PublicRoute"
 import PrivateRoute from "./components/basic/PrivateRoute"
@@ -17,7 +17,7 @@ function App() {
         path='/'
         element={
           token && user?
-          <Navigate to={"/chat"} />
+          <Navigate to={"/chats"} />
           :
           <Navigate to ={"/login"} />
         }
@@ -25,7 +25,7 @@ function App() {
         </Route>
 
         <Route
-        path='/chat'
+        path='/chats'
         element={
           <PrivateRoute>
             <Chat />
@@ -56,8 +56,6 @@ function App() {
           </p>
         }
         />
-
-
       </Routes>
     </>
   )

@@ -13,11 +13,12 @@ import moment from 'moment'
 const MessageItem = ({message, isOwnMessage, isGroupChatMessage, deleteChatMessage}) => {
     const [resizedImage, setResizedImage] = useState(null)
     const [openOption, setOpenOption] = useState(false)
+    console.log(isOwnMessage, "isOwnMessage")
   return (
     <>
       {
         resizedImage?
-        <div className="h-full z-40 p-8 overflow-hidden w-full absolute inset-0 bg-black/70 flex  justify-center items-center">
+        <div className="h-full z-40 p-8 overflow-hidden w-full absolute inset-0 bg-black/70 backdrop-blur-sm flex  justify-center items-center">
             <XMarkIcon
             className='absolute top-5 right-5 w-9 h-9 text-white cursor-pointer'
             onClick={()=>setResizedImage(null)}
@@ -32,185 +33,185 @@ const MessageItem = ({message, isOwnMessage, isGroupChatMessage, deleteChatMessa
       }
       <div
       className={classNames(
-        "flex justify-start items-end gap-3 max-w-lg min-w-sm",
-        isOwnMessage?"ml-auto":""
+        "flex  items-end gap-3 max-w-ful min-w-sm",
+        isOwnMessage?"justify-end":"justify-start"
       )}
       >
-        <img 
-        src={message.sender?.avatar.url} 
-        className={classNames(
-            "h-7 w-7 object-cover rounded-full flex flex-shrink-0 ",
-            isOwnMessage?"order-2":"order-1"
-        )}
-        alt="avatar" 
-        />
-        <div
-        onMouseLeave={()=>setOpenOption(false)}
-        className={classNames(
-            "p-4 rounded-3xl flex flex-col cursor-pointer group hover:bg-secondary",
-            isOwnMessage
-            ?"order-1 rounded-br-none bg-primary"
-            :"order-2 rounded-bl-none bg-secondary"
-        )}
-        >
-            {isGroupChatMessage && !isOwnMessage?
-            <p
+            <img 
+            src={message.sender?.avatar.url} 
             className={classNames(
-                "text-xs font-semibold mb-2 ",
-                ["text-success", "text-danger"][message.sender.username.length%2]
-
+                "h-7 w-7 object-cover rounded-full flex flex-shrink-0 border-[1px] border-white" ,
+                isOwnMessage?"order-2":"order-1"
+            )}
+            alt="avatar" 
+            />
+            <div
+            onMouseLeave={()=>setOpenOption(false)}
+            className={classNames(
+                "p-4 rounded-3xl flex flex-col cursor-pointer group hover:bg-secondary",
+                isOwnMessage
+                ?"order-1 rounded-br-none bg-primary"
+                :"order-2 rounded-bl-none bg-secondary"
             )}
             >
-                {message.sender?.username}
-            </p>
-            :null
-            }
-            {
-                message?.attachements?.length>0 ?
-                <div>
-                    {
-                        isOwnMessage?
-                        <button
-                        className={`self-center p-1 relative options-button`}
-                        onClick={()=>setOpenOption(!openOption)}
-                        >
-                            <EllipsisVerticalIcon
-                            className=' group-hover:w-6 group-hover:opacity-100 w-0 opacity-0 transition-all ease-in-out duration-100 text-zinc-300'
-                            />
-                            <div
-                            className={classNames(
-                                "z-30 text-left absolute bottom-0 translate-y-1 text-[10px] w-auto bg-dark rounded-2xl p-2 shadow-md border-[1px] border-secondary", 
-                                openOption?"block":"hidden")}
-                            >
-                                <p
-                                onClick={(e)=>{
-                                    e.stopPropagation()
-                                    const ok = confirm("Are you sure you want to delete the message")
-                                    if(ok){
-                                        deleteChatMessage(message)
-                                    }
-                                }}
-                                role='button'
-                                className='border border-red-500 p-4 text-danger rounded-lg w-auto inline-flex items-center hover:bg-secondary'
-                                >
-                                    <TrashIcon
-                                    className='h-4 w-4 mr-2'
-                                    />
-                                    Delete Message
-                                </p>
+                {isGroupChatMessage && !isOwnMessage?
+                <p
+                className={classNames(
+                    "text-xs font-semibold mb-2 ",
+                    ["text-success", "text-danger"][message.sender.username.length%2]
 
-                            </div>
-
-                        </button>
-                    :null}
-                    <div
-                    className={classNames(
-                        "grid max-w-7xl gap-2",
-                        message.attachements?.length ===1?"grid-cols-1":"",
-                        message.attachements?.length ===2?" grid-cols-2":"",
-                        message.attachements?.length ===3?" grid-cols-3":"",
-                        message.content?"mb-6":""
-                    )}
-                    >
+                )}
+                >
+                    {message.sender?.username}
+                </p>
+                :null
+                }
+                {
+                    message?.attachments?.length>0 ?
+                    <div>
                         {
-                            message.attachements?.map((file)=>(
+                            isOwnMessage?
+                            <button
+                            className={`self-center p-1 relative options-button`}
+                            onClick={()=>setOpenOption(!openOption)}
+                            >
+                                <EllipsisVerticalIcon
+                                className=' group-hover:w-6 group-hover:opacity-100 w-0 opacity-0 transition-all ease-in-out duration-100 text-zinc-300'
+                                />
                                 <div
-                                key={file._id}
-                                className=' group relative aspect-square rounded-xl overflow-hidden cursor-pointer'
+                                className={classNames(
+                                    "z-30 text-left absolute bottom-0 translate-y-1 text-[10px] w-auto bg-dark rounded-2xl p-2 shadow-md border-[1px] border-secondary", 
+                                    openOption?"block":"hidden")}
                                 >
-                                    <button
-                                    onClick={()=>setResizedImage(file.url)}
-                                    className='absolute inset-0 z-20 flex justify-center items-center w-full gap-2 h-full bg-black/60 group-hover:opacity-100 opacity-0 transition-opacity ease-in-out duration-150'
+                                    <p
+                                    onClick={(e)=>{
+                                        e.stopPropagation()
+                                        const ok = confirm("Are you sure you want to delete the message")
+                                        if(ok){
+                                            deleteChatMessage(message)
+                                        }
+                                    }}
+                                    role='button'
+                                    className='border border-red-500 p-4 text-danger rounded-lg w-auto inline-flex items-center hover:bg-secondary'
                                     >
-                                        <MagnifyingGlassPlusIcon
-                                        className='h-6 w-6 text-white'
+                                        <TrashIcon
+                                        className='h-4 w-4 mr-2'
                                         />
-                                        <a
-                                        href={file.url}
-                                        download
-                                        onClick={(e)=>e.stopPropagation()}
-                                        >
-                                            <ArrowDownTrayIcon
-                                            title='download'
-                                            className=' hover:text-zinc-400 h-6 w-6 text-white cursor-pointer'
-                                            />
-
-                                        </a>
-                                    </button>
-                                    <img
-                                    className='h-full w-full object-cover'
-                                    src={file.url}
-                                    />
+                                        Delete Message
+                                    </p>
 
                                 </div>
-                            ))
-                        }
 
-                    </div>
-                </div>
-            :null}
-            {
-                message.content?
-                <div className='relative flex justify-between'>
-                    {
-                        isOwnMessage?
-                        <button
-                        className='self-center relative options-button'
-                        onClick={()=>setOpenOption(!openOption)}
+                            </button>
+                        :null}
+                        <div
+                        className={classNames(
+                            "grid max-w-7xl gap-2",
+                            message.attachments?.length ===1?"grid-cols-1":"",
+                            message.attachments?.length ===2?" grid-cols-2":"",
+                            message.attachments?.length ===3?" grid-cols-3":"",
+                            message.content?"mb-6":""
+                        )}
                         >
-                            <EllipsisVerticalIcon
-                            className='group-hover:w-4 group-hover:opacity-100 w-0 opacity-0 transition-all ease-in-out duration-100 text-zinc-300'
-                            />
-                            <div
-                            className={classNames(
-                                " delete-menu z-20 text-left -translate-x-24 -translate-y-4 absolute bottom-0 text-[10px] w-auto bg-dark rounded-2xl shadow-md border-[1px]  border-secondary", 
-                                openOption?"block":"hidden")}
-                            >
-                                <p
-                                onClick={(e)=>{
-                                    e.stopPropagation()
-                                    const ok = confirm("Are you sure you want to delete the message")
-                                    if(ok){
-                                        deleteChatMessage(message)
-                                    }
-                                }}
-                                role='button'
-                                className='p-2 text-danger rounded-lg w-auto inline-flex items-center hover:bg-secondary'
-                                >
-                                    <TrashIcon
-                                    className='h-4 w-auto mr-1'
-                                    />
-                                    Delete Message
-                                </p>
-                            </div>
-                        </button>
-                        :null
-                    }
-                    <p
-                    className='text-sm'
-                    >
-                        {message.content}
-                    </p>
-                </div>
-                :null
-            }
-            <p
-            className={classNames(
-                "mt-1.5 self-end text-[10px] inline-flex items-center ",
-                isOwnMessage?"text-zinc-50":"text-zinc-400"
-            )}
-            >
+                            {
+                                message.attachments?.map((file)=>(
+                                    <div
+                                    key={file._id}
+                                    className=' group relative aspect-square rounded-xl overflow-hidden cursor-pointer'
+                                    >
+                                        <button
+                                        onClick={()=>setResizedImage(file.url)}
+                                        className='absolute inset-0 z-20 flex justify-center items-center w-full gap-2 h-full bg-black/60 group-hover:opacity-100 opacity-0 transition-opacity ease-in-out duration-150'
+                                        >
+                                            <MagnifyingGlassPlusIcon
+                                            className='h-6 w-6 text-white'
+                                            />
+                                            <a
+                                            href={file.url}
+                                            download
+                                            onClick={(e)=>e.stopPropagation()}
+                                            >
+                                                <ArrowDownTrayIcon
+                                                title='download'
+                                                className=' hover:text-zinc-400 h-6 w-6 text-white cursor-pointer'
+                                                />
+
+                                            </a>
+                                        </button>
+                                        <img
+                                        className='h-full w-full object-cover'
+                                        src={file.url}
+                                        />
+
+                                    </div>
+                                ))
+                            }
+
+                        </div>
+                    </div>
+                :null}
                 {
-                    message.attachements?.length>0?
-                    <PaperClipIcon
-                    className='h-4 w-4 mr-2'
-                    />
+                    message.content?
+                    <div className='relative flex justify-between'>
+                        {
+                            isOwnMessage?
+                            <button
+                            className='self-center relative options-button'
+                            onClick={()=>setOpenOption(!openOption)}
+                            >
+                                <EllipsisVerticalIcon
+                                className='group-hover:w-4 group-hover:opacity-60 w-0 opacity-0 transition-all ease-in-out duration-100 text-zinc-300'
+                                />
+                                <div
+                                className={classNames(
+                                    " delete-menu z-20 text-left -translate-x-20 -translate-y-4 absolute bottom-0 text-[10px] w-auto bg-dark rounded-2xl shadow-md border-[1px]  border-secondary", 
+                                    openOption?"block":"hidden")}
+                                >
+                                    <p
+                                    onClick={(e)=>{
+                                        e.stopPropagation()
+                                        const ok = confirm("Are you sure you want to delete the message")
+                                        if(ok){
+                                            deleteChatMessage(message)
+                                        }
+                                    }}
+                                    role='button'
+                                    className='p-2 text-danger rounded-lg w-auto inline-flex items-center hover:bg-secondary'
+                                    >
+                                        <TrashIcon
+                                        className='h-4 w-auto mr-1'
+                                        />
+                                        Delete Message
+                                    </p>
+                                </div>
+                            </button>
+                            :null
+                        }
+                        <p
+                        className='text-sm'
+                        >
+                            {message.content}
+                        </p>
+                    </div>
                     :null
                 }
-                { moment(message.updatedAt).add("TIME_ZONE", "hours").fromNow(true)}{""}
-                    ago
-            </p>
-        </div>
+                <p
+                className={classNames(
+                    "mt-1.5 self-end text-[10px] inline-flex items-center ",
+                    isOwnMessage?"text-zinc-50":"text-zinc-400"
+                )}
+                >
+                    {
+                        message.attachments?.length>0?
+                        <PaperClipIcon
+                        className='h-4 w-4 mr-2'
+                        />
+                        :null
+                    }
+                    { moment(message.updatedAt).add("TIME_ZONE", "hours").fromNow(true)}{" "}
+                        ago
+                </p>
+            </div>
       </div>
     </>
   )
